@@ -1,0 +1,88 @@
+﻿@model IEnumerable<Travel.ViewModel.CustomerViewModel>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css">
+
+<h2>All Customers</h2>
+
+@*<input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">*@
+
+
+
+<div  style="text-align: right">
+    <table id="myTable" class="table table-striped table-bordered table-primary" >
+
+    <thead>
+        <tr>
+            <th>Print</th>
+            <th>Contract Number</th>
+            <th>Cover Limit</th>
+            <th>PassportNo</th>
+            <th>Father Name</th>
+            <th>ZipCode</th>
+            <th>Address</th>
+            <th>BirthDate</th>
+            <th>Person LastName</th>
+            <th>Person Name</th>
+            <th>Id</th>
+        </tr>
+    </thead>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+
+            <td></td>
+            <td>@item.Gid</td>
+            <td>@item.CoverLimitName</td>
+            <td>@item.PassportNo</td>
+            <td>@item.FatherName</td>
+            <td>@item.CodePosti</td>
+            <td>@item.PersonAddress</td>
+            <td>@item.BirthDateMiladi</td>
+            <td>@item.PersonLname</td>
+            <td>@item.PersonName</td>
+            <td>@item.Id</td>
+
+        </tr>
+    }
+
+
+
+</table>
+</div>
+
+
+
+@section Scripts{
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+    
+    <script>
+        function myFunction() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("myTable");
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $('#myTable').DataTable();
+          //  $('.dataTables_length').addClass('bs-select');
+        });
+    </script>
+}
+

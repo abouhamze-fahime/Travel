@@ -1,0 +1,136 @@
+﻿
+@using Travel.Convertor
+@model List<Travel.Models.Account.Role>
+@{
+    ViewData["Title"] = "نقشهای کاربران";
+}
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">لیست نقشها</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                لیست نقش های کاربران
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <div id="dataTables-example_wrapper" class="dataTables_wrapper form-inline" role="grid">
+
+                        <div class="col-md-12" style="margin: 10px 0;">
+
+                            <a asp-action="CreateRoleGet"  asp-controller="Admin"    class="btn btn-outline btn-success">افزودن نقش جدید</a>
+                            @*href="/Admin/Users/createUser"*@
+
+                        </div>
+                        <table class="table table-striped table-bordered table-hover dataTable no-footer" id="dataTables-example" aria-describedby="dataTables-example_info">
+                            <thead>
+                                <tr>
+                                    <th>عنوان نقش</th>
+                                    <th>دستورات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var role in Model)
+                                {
+                                    <tr>
+                                        <td>@role.RoleTitle</td>
+                                        <td>
+                                            <a href="/Admin/EditRole/@role.RoleId" class="btn btn-warning btn-sm">
+                                                ویرایش
+                                            </a>
+                                            @*<a href="/Admin/DeleteRole/@role.RoleId" class="btn btn-danger btn-sm">
+                                                حذف
+                                            </a>*@
+
+                                            <input type="button" value="حذف" data-id="@role.RoleId" class="btn btn-danger" onclick="deleteConfirm('@role.RoleTitle', '@role.RoleId')" />
+
+
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<div class="modal" id="delete-conformation" style="margin:0 auto;" tabindex="-1" role="dialog" aria-labelledby="deleteconformation">
+    <div class="modal-dialog" style="width:501px !important;">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#d9534f;color:white;">
+                <h4 class="modal-title">
+                    تایید حذف نقش
+                </h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <span>
+                                آیا از حذف مطمئن هستید؟
+                            </span>
+                            <strong id="deletedValueName">
+                            </strong>
+                            <strong id="deletedId">
+                            </strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">انصراف</button>
+                    <input type="submit" class="btn btn-danger" value="حذف" onclick="deleteData()" />
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+
+
+ @section scripts{
+    <script type="text/javascript">
+        //this is only display bootstrap modal pop up dialog
+        var roleId;
+        var deleteConfirm = function (val, id) {
+            $('#deletedValueName').text(val);
+            $('#delete-conformation').modal('show');
+            roleId = id;
+        }
+
+
+        //call this function after click on confirm delete button
+        var deleteData = function () {
+
+            $.ajax({
+                type: "POST",
+                url: "/admin/DeleteRole?Id=" + roleId,
+                 data: { RoleId: roleId },
+                success: function (result) {
+                    $("#delete-conformation").modal('hide');
+                    $("[data-id=" + roleId + "]").parents('tr').remove();
+                },
+                error: function () {
+                    $("#delete-conformation").modal('hide');
+                }
+            });
+        }
+    </script>
+}

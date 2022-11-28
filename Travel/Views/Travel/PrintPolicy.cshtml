@@ -1,0 +1,143 @@
+﻿@model Travel.ViewModel.PrintViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>PrintPolicy</title>
+</head>
+<div class="image">
+    <img src="/img/day ins.png" class="img-circle elevation-2" alt="User Image" style=" width: 10%; border-radius:0;">
+</div>
+<body>
+
+
+    <div>
+        <h4>Day Insurance Policy</h4>
+        <hr />
+
+
+        <table>
+            <tr>
+                <td style="width:120px">@Html.DisplayNameFor(model => model.PersonName)  </td>
+                <td style="width:100px">@Html.DisplayFor(model => model.PersonName) </td>
+                <td style="width:120px">@Html.DisplayNameFor(model => model.PersonLname) </td>
+                <td style="width:100px">@Html.DisplayFor(model => model.PersonLname) </td>
+            </tr>
+
+
+            <tr style="hight:50px ">
+                <td style="width:120px">@Html.DisplayNameFor(model => model.BirthDate)</td>
+                <td style="width:100px">
+                     @{
+                        var date = Model.BirthDate.ToShortDateString();
+                    }
+                    @Html.DisplayFor(modelItem => date)
+                    
+                    </td>
+                    
+               @*     @Html.DisplayFor(model => model.BirthDate)*@
+
+                <td style="width:120px">@Html.DisplayNameFor(model => model.Mobile)</td>
+                <td style="width:100px">@Html.DisplayFor(model => model.Mobile)</td>
+
+
+            </tr>
+
+
+
+            <tr style="hight:50px">
+                <td style="width:120px">@Html.DisplayNameFor(model => model.PassportNo)</td>
+                <td style="width:100px">@Html.DisplayFor(model => model.PassportNo)</td>
+
+                <td style="width:120px">@Html.DisplayNameFor(model => model.Moddat)</td>
+                <td style="width:100px">@Html.DisplayFor(model => model.Moddat)</td>
+
+            </tr>
+
+            <tr style="hight:50px">
+                <td style="width:120px">@Html.DisplayNameFor(model => model.CoverLimitName)</td>
+                <td style="width:100px">@Html.DisplayFor(model => model.CoverLimitName)</td>
+
+
+                <td style="width:120px">@Html.DisplayNameFor(model => model.IssueDateMiladi)</td>
+                <td id="issudate" style="width:100px">
+                    @{
+                        var date2 = Model.IssueDateMiladi.ToShortDateString();
+                    }
+                    @Html.DisplayFor(modelItem => date2)
+
+
+
+                 @*   @Html.DisplayFor(model => model.IssueDateMiladi.ToShortDateString())*@
+                </td>
+
+            </tr>
+
+            <tr style="hight:50px">
+                <td style="width:120px">@Html.DisplayNameFor(model => model.Amount)</td>
+                <td style="width:100px">@Html.DisplayFor(model => model.Amount)</td>
+
+                <td style="width:120px">@Html.DisplayNameFor(model => model.AgentCode)</td>
+                <td style="width:100px">@Html.DisplayFor(model => model.AgentCode)</td>
+            </tr>
+            <tr style="hight:50px">
+                <td style="width:120px">@Html.DisplayNameFor(model => model.PersonAddress)</td>
+                <td style="width:300px">@Html.DisplayFor(model => model.PersonAddress)</td>
+            </tr>
+
+        </table>
+    </div>
+
+
+
+
+
+</body>
+</html>
+
+@section Scripts {
+
+    <script>
+
+        //$(document).ready(function() {
+        //    debugger;
+        //    var dd = formatDate(@Html.DisplayFor(model => model.IssueDateMiladi));
+        //    $("#issudate").append(dd);
+        //}
+
+        const formatDate = date => {
+            const d = new Date(date)
+            let month = (d.getMonth() + 1).toString()
+            let day = d.getDate().toString()
+            const year = d.getFullYear()
+            if (month.length < 2) {
+                month = '0' + month
+            }
+            if (day.length < 2) {
+                day = '0' + day
+            }
+            return [year, month, day].join('-')
+        }
+
+        function print() {
+            $(".btnPrint").printPage()
+        }
+
+
+    </script>
+
+}
+
+
+
+
+
+
+
+

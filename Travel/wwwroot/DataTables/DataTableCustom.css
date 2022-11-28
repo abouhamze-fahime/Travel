@@ -1,0 +1,49 @@
+﻿.table-bordered > tbody > tr:nth-child(odd) > td {
+    background-color: #f9f9f9;
+}
+
+.table-bordered > tbody > tr:nth-child(even) > td {
+    background-color: #ffffff;
+}
+.table-bordered{
+    overflow:scroll;
+     max-height:700px;
+}
+#InvoiceListTable {
+    width: 100% !important;
+}
+
+.operation {
+    cursor: pointer;
+    color: Highlight;
+}
+
+.yadcf-filter-wrapper .select2-container {
+    padding: 0 5px
+}
+
+.add-item {
+    padding: 10px 15px;
+}
+.yadcf-filter-wrapper {
+    display: block;
+}
+
+/*
+td.details-control {
+    background: url('/DataTables/DataTables-1.11.2/images/details_open.png') no-repeat center center;
+    cursor: pointer;
+}
+
+tr.shown td.details-control {
+    background: url('/DataTables/DataTables-1.11.2/images/details_close.png') no-repeat center center;
+}
+
+th, td {
+    white-space: nowrap;
+}
+
+div.dataTables_wrapper {
+    width: 500px;
+    margin: 0 auto;
+}*/

@@ -1,0 +1,1 @@
+﻿ Scaffold-DbContext -Connection "Server=.;Database=TravelPolicy;Trusted_Connection=True;" -Provider Microsoft.EntityFrameworkCore.SqlServer -OutputDir   Models/Travel/     -ContextDir TravelDbContext -Context    TravelContext  -Schemas dbo  -Table TravelBn -Force  -NoPluralize  -NoOnConfiguring

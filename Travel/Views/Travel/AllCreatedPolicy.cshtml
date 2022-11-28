@@ -1,0 +1,206 @@
+﻿<link href="~/lib/MD/Site.css" rel="stylesheet" />
+<link href="~/Sweetalert/sweetalert.css" />
+<div class="card ">
+    <div class="card-header bg-light">
+        Issued Policy list
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="ToDate">To Date</label>
+                    <input type="text" class="form-control" name="ToDate" id="ToDate" />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="FromDate">From Date</label>
+                    <input type="text" class="form-control" name="FromDate" id="FromDate" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer text-muted">
+        <button type="submit" onclick="LoadData()" class="btn btn-success">Search</button>
+    </div>
+</div>
+<br />
+<div class="card">
+    <div class="card-header bg-light ">
+        Travel Policy
+    </div>
+    <div class="card-body card-primary">
+        <div class="row text-left">
+            <button type="submit" onclick="ExcelExport()" class="btn btn-primary text-left">Download Excel</button>
+        </div>
+        <br />
+        <div class="row">
+            <table style=" direction: rtl;" id="tbl_Data" class="table   table-responsive-lg table-bordered">
+                <thead class="table-dark table-secondary">
+                    <tr>
+                        <th>Status</th>
+                        <th>Print</th>
+                        <th>Edit</th>
+                        <th>Issue Date</th>
+                        <th>Contract Id</th>
+                        <th>Cover Limit</th>
+                        <th>PassportNo</th>
+                        <th>Father Name</th>
+                        <th>ZipCode</th>
+                        <th>Address</th>
+                        <th>BirthDate</th>
+                        <th>Person FullName</th>
+                        <th>Id</th>
+                    </tr>
+                </thead>
+                <tbody style="word-wrap: break-word;">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script src="~/Sweetalert/sweetalert.js"> </script>
+    <script>
+        var selectedValues = [];
+        $(document).ready(function() {
+            $("#FromDate").datepicker({});
+            $("#ToDate").datepicker({});
+        });
+
+        function LoadData() {
+            var model = {};
+            model.FromDate = $('#FromDate').val();
+            model.ToDate = $('#ToDate').val();
+            console.log(model);
+            var url = '/Travel/GetReport'
+
+            $.post(url, model, function(result) {
+                if (result.IsSuccess) {
+                    console.log(result.Data);
+                    LoadTable(result.Data);
+                } else {
+                    //show error with swal ya harchi
+                }
+            })
+        }
+
+        function LoadTable(Data) {
+            var html = '';
+            for (var i = 0; i < Data.length; i++) {
+
+                if (Data[i].IsSendToFan) {
+                    html += '<tr style="background-color: #a7e598">';
+                    html += '<td>Received</td>';
+                } else {
+                    html += '<tr>';
+                    html += '<td><input type="checkbox"  name="checkForExcel" id="checkForExcel_' + Data[i].Id + '"></td>';
+                }
+                html += '<td>' + '<a class="btn btn-info"  onclick="PrintPolicy(' + Data[i].Id + ')"   >Print</a> ' + '</td>';
+                html += '<td>' + '<a class="btn btn-info"  onclick="EditPolicy(' + Data[i].Id + ')"   >Edit</a>' + '</td>';
+                html += '<td>' + formatDate(Data[i].IssueDateMiladi) + '</td>';
+                html += '<td>' + Data[i].Gid + '</td>';
+                html += '<td>' + Data[i].CoverLimit + '</td>';
+                html += '<td>' + Data[i].PassportNo + '</td>';
+                html += '<td>' + Data[i].FatherName + '</td>';
+                html += '<td>' + Data[i].CodePosti + '</td>';
+                html += '<td style="word-break:break-all;width:100px; ">' + Data[i].PersonAddress + '</td>';
+                html += '<td>' + formatDate(Data[i].BirthDateMiladi) + '</td>';
+                html += '<td>' + Data[i].PersonName + ' ' + Data[i].PersonLname + '</td>';
+                html += '<td>' + Data[i].Id + '</td>';
+                html += '</tr>'
+            }
+            console.log(html);
+            $('#tbl_Data tbody').html(html);
+        }
+
+
+        function ExcelExport() {
+            var tempSelectedValues = [];
+            var checkBoxs = document.getElementsByName('checkForExcel');
+            for (var i = 0; i < checkBoxs.length; i++) {
+                if (checkBoxs[i].checked) {
+                    tempSelectedValues.push(parseInt(checkBoxs[i].id.substring(checkBoxs[i].id.indexOf('_') + 1)));
+                }
+            }
+            selectedValues = tempSelectedValues;
+            DownloadExcel();
+        }
+
+        function DownloadExcel() {
+            var url = '/Travel/ExportListToExcel';
+            var model = {};
+            model.SelectedId = selectedValues;
+            model.FromDate = $('#FromDate').val();
+            model.ToDate = $('#ToDate').val();
+            if (model.SelectedId == '' || model.SelectedId == null || model.SelectedId.length == 0) {
+                Swal.fire('Select a row')
+                return;
+            }
+            $.post(url, model, function(result) {
+                debugger;
+                if (result.IsSuccess) {
+                    debugger;
+                    const downloadLink = document.createElement('a');
+                    //downloadLink.style.display = 'none';
+                    downloadLink.href = window.URL.createObjectURL(base64ToBlob(result.Data, 'application/vnd.ms-excel'));
+                    // the filename you want
+                    debugger;
+                    downloadLink.download = 'excel_data.xls';
+                    document.body.appendChild(downloadLink);
+                    debugger;
+                    downloadLink.click();
+                    window.URL.revokeObjectURL(url);
+                    LoadData();
+                } else {
+                    //show error with swal ya harchi
+                }
+            })
+        }
+
+        function base64ToBlob(base64, mimetype, slicesize) {
+            if (!window.atob || !window.Uint8Array) {
+                // The current browser doesn't have the atob function. Cannot continue
+                return null;
+            }
+            mimetype = mimetype || '';
+            slicesize = slicesize || 512;
+            var bytechars = atob(base64);
+            var bytearrays = [];
+            for (var offset = 0; offset < bytechars.length; offset += slicesize) {
+                var slice = bytechars.slice(offset, offset + slicesize);
+                var bytenums = new Array(slice.length);
+                for (var i = 0; i < slice.length; i++) {
+                    bytenums[i] = slice.charCodeAt(i);
+                }
+                var bytearray = new Uint8Array(bytenums);
+                bytearrays[bytearrays.length] = bytearray;
+            }
+            return new Blob(bytearrays, { type: mimetype });
+        };
+        function EditPolicy(id) {
+            window.location.href = '/Travel/LoadCreateOrEdit/' + id;
+        }
+
+        function PrintPolicy(id) {
+            window.location.href = '/Travel/PrintPolicy/' + id;
+        }
+
+        const formatDate = date => {
+            const d = new Date(date)
+            let month = (d.getMonth() + 1).toString()
+            let day = d.getDate().toString()
+            const year = d.getFullYear()
+            if (month.length < 2) {
+                month = '0' + month
+            }
+            if (day.length < 2) {
+                day = '0' + day
+            }
+            return [year, month, day].join('-')
+        }
+    </script>
+}
+

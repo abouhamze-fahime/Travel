@@ -1,0 +1,172 @@
+﻿
+
+
+
+
+<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet" />
+
+
+<div class="d-flex flex-row">
+    <form asp-controller="Home" asp-action="ExportFireP04TafkikListToExcel" method="post">
+        <div dir="ltr">
+
+            <label for="fromId"><strong>From Date</strong></label>
+            <input type="datetime" placeholder="From Date" name="fromDate" id="fromDate">
+            <label for="toId"><strong>To Date</strong></label>
+            <input type="datetime" placeholder="To Date" name="toDate" id="toDate">
+            <button type="submit">Export to excel</button>
+
+        </div>
+
+
+    </form>
+</div>
+
+
+
+<div class="row ">
+    <br />
+    <div style="width:100%;">
+        <table id="example" class="table table-bordered dt-responsive overflow-x:scroll" width="100%" cellspacing="0" >
+            @*            <thead>
+            <tr>
+            <th>Person Name</th>
+            <th>Person LastName</th>
+            <th>BirthDate</th>
+            <th>Address</th>
+            <th>ZipCode</th>
+            <th>Father Name</th>
+            <th>PassportNo</th>
+            <th>Cover Limit</th>
+            <th>Contract Id</th>
+            <th>Edit</th>
+            </tr>
+            </thead>*@
+        </table>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @*    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>*@
+    <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js "></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css"></script>
+
+
+    <script>
+
+
+        $(document).ready(function() {
+            $("#example").DataTable({
+                "processing": true, // for show progress bar
+                "serverSide": true, // for process server side
+                "filter": true, // this is for disable filter (search box)
+                "orderMulti": false, // for disable multiple column at once
+                "ajax": {
+                    "url": "/Travel/LoadData",
+                    "type": "POST",
+                    "datatype": "json"
+                },
+                "scrollX": true,
+                "scroller":       true,
+               
+                
+
+                        //,
+                        //dom: 'Bfrtip',
+                        //buttons: [{
+                        //    extend: 'excelHtml5',
+                        //    autoFilter: true,
+                        //    sheetName: 'Exported data'
+                        //}]
+
+                        //,
+                        //"columnDefs":
+                        //    [{
+                        //        "targets": [0],
+                        //        "visible": true,
+                        //        "searchable": false
+                        //    }]
+
+                "columns": [
+
+
+                    {
+                        "data": "Id",
+                        "render": function(data, type, full, meta) {
+                            return `<div class="text-center"> <a class="btn btn-info"      onclick="PrintPolicy(` + data + `)"   >Print</a> </div> `;
+                        }
+                    },
+                    {
+                        "data": "Id",
+                        "render": function(data, type, full, meta) {
+                            return `<div class="text-center"> <a class="btn btn-info"      onclick="EditPolicy(` + data + `)"   >Edit</a> </div> `;
+                        }
+                    },
+            //        { "data": "IsSendToFan", "render": StatusName, "searchable": true, "title": "Status", "name": "IsSendToFan", "autoWidth": true },
+                    {
+                       "data": "IsSendToFan", 
+                        "render": function(data, type, full, meta) {
+                            return `<input type="checkbox"  name="checkForExcel" id="checkForExcel_"  onclick="ExportToExcel(` + data + `)">`
+                           // `<div class="text-center"> <a class="btn btn-info"      onclick="PrintPolicy(` + data + `)"   >Print</a> </div> `;
+                        }
+                    },
+
+                    { "data": "IssueDateMiladi", "searchable": true, "title": "IssueDate", "name": "IssueDateMiladi", "autoWidth": true },
+                    { "data": "Gid", "searchable": true, "title": "Contract No", "name": "gid", "autoWidth": true },
+                    { "data": "CoverLimitName", "searchable": true, "title": "Cover Limit", "name": "coverLimitName", "autoWidth": true },
+                    { "data": "PassportNo", "searchable": true, "title": "PassportNo ", "name": "PassportNo", "autoWidth": true },
+                    { "data": "FatherName", "searchable": true, "title": "Father Name", "name": "FatherName", "autoWidth": true },
+                    { "data": "CodePosti", "searchable": true, "title": "ZipCode", "name": "codePosti", "autoWidth": true },
+                    { "data": "PersonAddress", "searchable": true, "title": "Address", "name": "personAddress", "autoWidth": true },
+                    { "data": "BirthDateMiladi", "searchable": true, "title": "BirthDate", "name": "birthDateMiladi", "autoWidth": true },
+                    { "data": "PersonLname", "searchable": true, "title": "Last Name", "name": "personLname", "autoWidth": true },
+                    { "data": "PersonName", "title": "First Name", "name": "PersonName", "visible": true },
+                    { "data": "Id", "title": "Id", "name": "id", "visible": true }
+                ],
+                "createdRow": function(row, data, dataIndex) {
+                    if (data.IsSendToFan == 1) {
+                        $(row).css({ "background": "#e5da1a" });
+                    }
+
+                }
+            });
+        });
+
+
+
+        function StatusName(bit) {
+            if (bit == true) { return "Sent" }
+            else { return "Not sent" }
+        }
+
+
+        function EditPolicy(id) {
+
+            window.location.href = '/Travel/LoadCreateOrEdit/' + id;
+        }
+
+
+        function PrintPolicy(id) {
+            window.location.href = '/Travel/PrintPolicy/' + id;
+        }
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $("#fromDate").datepicker({
+            });
+        });
+        $(document).ready(function() {
+            $("#toDate").datepicker({
+            });
+        });
+    </script>
+
+
+
+
+}

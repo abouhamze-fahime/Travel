@@ -1,0 +1,144 @@
+﻿@model IEnumerable<Travel.ViewModel.CustomerViewModel>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css">
+
+<h2 style="text-align: left">Customer's Policy</h2>
+@*<form  method="get" style="text-align: left">
+    <div class="form-actions no-color">
+        <p>
+            <input type="submit" onclick="khata()"  value="Search" class="btn btn-default" autocomplete="off" />
+            <input type="text"  id="search" name="SearchString" /> : Find
+        </p>
+    </div>
+</form>*@
+
+
+<input type="button" onclick="khata()" id="sear" value="Search" class="btn btn-default" autocomplete="off" />
+<input type="text" id="search" name="SearchString" /> : Find
+
+<div id="div1">
+    <table id="myTable" class="table table-striped table-bordered table-primary">
+        <thead>
+            <tr>
+                <th>Print</th>
+                <th>Contract Number</th>
+                <th>Cover Limit</th>
+                <th>Father Name</th>
+                <th>Address</th>
+                <th>BirthDate</th>
+                <th>PassportNo</th>
+                <th>Person LastName</th>
+                <th>Person Name</th>
+                <th>Id</th>
+            </tr>
+        </thead>
+
+    </table>
+</div>
+
+
+
+<div style="text-align: right"></div>
+
+
+
+@section Scripts {
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+
+    <script>
+        function khata() {
+            var mt = document.getElementById("search").value;
+          
+
+            if (mt == "") {
+                swal({
+                    title: "Error!",
+                    text: "!You should enter search value",
+                    icon: 'error',
+                    button: "!Ok",
+                });
+            }
+            else {
+                $.ajax({
+                    url: "InquiryPolicy/" + mt,
+                    type: "get",
+                    contentType: "application/json;",
+                    data: {
+                        searchString: mt
+                    },
+                    success: function(response) {
+                        if (response == "" || response == null || response.length == 0) {
+
+                            swal({
+                                title: "Error!",
+                                text: "!Nothing were found",
+                                icon: 'error',
+                                button: "!Ok",
+                            });
+                        }
+                        else {
+                            for (var i = 0; i < response.length; i++) {
+                                var row = $(
+
+                                    '<tr><td>' + " print  " + '</td>' +
+                                    '<td>' + response[i].FatherName + '</td><td>' + response[i].CoverLimitName + '</td><td>' + response[i].Gid + '</td>' +
+                                    '<td>' + response[i].PassportNo + '</td><td>' + response[i].BirthDate + '</td><td>' + response[i].PersonAddress + '</td>' +
+                                    '<td>' + response[i].PersonLname + '</td><td>' + response[i].PersonName + '</td><td>' + response[i].Id + '</td></tr>'
+
+                                );
+                               
+                                $('#myTable').append(row);
+                            }
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        alert('Error: ' + textStatus + ' - ' + errorThrown);
+                    }
+                });
+
+            }
+        }
+
+
+
+
+    </script>
+
+
+
+
+}
+    @*@section Scripts{
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        function myFunction() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("myTable");
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $('#myTable').DataTable();
+            //  $('.dataTables_length').addClass('bs-select');
+        });
+    </script>
+}
+*@
